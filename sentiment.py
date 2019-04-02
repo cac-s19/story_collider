@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 # Fun examples included: raven.txt, hanselgretel.txt, icarus.txt
 # Note: It seems that TextBlob does not like parsing through copy-pasted end quotes.
 #       If you're getting UnicodeDecodeError, that could the problem.
-filename = "transcripts/icarus.txt";
-transcript = TextBlob(open(filename, "r").read())
+filename = "transcripts/sc0-inspiration.txt";
+transcript = TextBlob(open(filename).read())
 polx = []; poly = []
 subx = []; suby = []
 
