@@ -1,4 +1,3 @@
-labMIT-1.0.txt
 language             assessment      by                 Mechanical                    Turk          1.0
 word                 happiness_rank  happiness_average  happiness_standard_deviation  twitter_rank  google_rank  nyt_rank  lyrics_rank
 laughter             1               8.50               0.9313                        3600          --           --        1728
