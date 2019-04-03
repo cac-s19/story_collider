@@ -1,6 +1,12 @@
 # Imports
+import numpy as np
 from textblob import TextBlob
 import matplotlib.pyplot as plt
+
+def moving_average(a, n=3) :
+    ret = np.cumsum(a, dtype=float)
+    ret[n:] = ret[n:] - ret[:-n]
+    return ret[n - 1:] / n
 
 # Fun examples included: raven.txt, hanselgretel.txt, icarus.txt
 # Note: It seems that TextBlob does not like parsing through copy-pasted end quotes.
@@ -22,8 +28,8 @@ for sentence in transcript.sentences:
 # Time to graph! set up the plot with axes and labels
 plt.title(filename);
 plt.ylim(-1, 1)
-plt.plot(polx, poly, linewidth = 1, label = "polarity")
-plt.plot(subx, suby, linewidth = 1, label = "subjectivity")
+plt.plot(moving_average(poly,n=10), linewidth = 1, label = "polarity")
+#plt.plot(moving_average(suby,n=20), linewidth = 1, label = "subjectivity")
 plt.xlabel("sentence #")
 plt.legend()
 plt.show()
