@@ -7,3 +7,4 @@ Katie Murenbeeld
 Jenny Fothergill
 Aubrey Osorio
 Neale Ellyson
+Mia Klopfenstein
