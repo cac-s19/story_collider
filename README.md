@@ -6,4 +6,8 @@
 
 Here's the paper that inspired this project:
 https://doi.org/10.1140/epjds/s13688-016-0093-1
+    related for datasets: https://link.springer.com/article/10.1140/epjds/s13688-017-0121-9
 
+Dr. Casey Kennington recommended using "TextBlob", a python library that will do everything from parsing to sentiment analysis:
+How to install: https://textblob.readthedocs.io/en/dev/install.html
+How to get started: https://textblob.readthedocs.io/en/dev/quickstart.html
