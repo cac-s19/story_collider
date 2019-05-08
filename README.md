@@ -1,6 +1,6 @@
 # story_collider
 
-
+![Story Collider Mental Model](VIP500MentalModel.png)
 
 [Link to Story Collider](https://storycollider.org)
 
