@@ -16,3 +16,9 @@ How to get started: https://textblob.readthedocs.io/en/dev/quickstart.html
 
 All story collider stories are copyrighted and the property of The Story Collider. All rights reserved. 
 Our code is GPL'ed, see LICENSE for details. 
+
+## Setup
+```
+$ pip install -r requirements.txt 
+$ python -m textblob.download_corpora
+```
