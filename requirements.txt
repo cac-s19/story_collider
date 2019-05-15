@@ -3,3 +3,4 @@ textblob
 matplotlib
 requests
 docx2txt
+argparse
