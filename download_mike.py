@@ -44,6 +44,6 @@ for i,x in enumerate(glob.glob("worddocs/*.docx")):
     fname = x.split("/")
     fname = fname[-1].replace("docx", "txt")
     with open(text_folder + "/" + fname, "w") as f:
-        f.write(x)
+        f.write(text)
 
 print("\nDone!")
