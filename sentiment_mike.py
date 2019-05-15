@@ -14,6 +14,7 @@ else:
 import numpy as np
 from textblob import TextBlob
 import argparse
+import os
 
 
 def moving_average(data, window_size=3):
@@ -42,7 +43,21 @@ if __name__ == "__main__":
                         required=False,
                         help="Text file (.txt) on which to do sentiment analysis")
 
+    parser.add_argument("-s", "--save", 
+                        dest="save",
+                        action="store_true",
+                        help="Save the resulting plot as plots/author_name.png (default=False)")
+
+    parser.set_defaults(save=False)
+
     args = parser.parse_args()
+
+
+    plots_folder = "plots"
+
+    if not os.path.exists(plots_folder):
+        os.makedirs(plots_folder)
+
 
     filename = args.input_file
     with open(filename, "r") as f:
@@ -89,4 +104,11 @@ if __name__ == "__main__":
     # plt.plot(moving_average(suby,n=20), linewidth = 1, label = "subjectivity")
     plt.xlabel("sentence #")
     plt.legend()
-    plt.show()
+
+    if args.save == True:
+        fname = author.replace(" ","") # Remove spaces
+        plt.savefig(f"plots/{fname}.png")
+        plt.close()
+        print(f"Plot saved to plots/{fname}.png")
+    else:
+        plt.show()
