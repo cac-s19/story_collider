@@ -1,7 +1,19 @@
 import time
-import matplotlib.pyplot as plt
+import platform 
+
+
+# This fixes NSInvalidArgumentException from tkinter on OSX
+if platform.system() == "Darwin": 
+    import matplotlib
+    matplotlib.use("TkAgg")
+    from matplotlib import pyplot as plt
+else:
+    import matplotlib.pyplot as plt
+
+
 import numpy as np
 from textblob import TextBlob
+import argparse
 
 
 def moving_average(data, window_size=3):
@@ -21,10 +33,22 @@ if __name__ == "__main__":
     # Fun examples included: raven.txt, hanselgretel.txt, icarus.txt
     # Note: It seems that TextBlob does not like parsing through copy-pasted end quotes.
     #       If you're getting UnicodeDecodeError, that could the problem.
-    filename = "transcripts/sc0-inspiration.txt"
+
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
+    parser.add_argument("-f", "--input_file", 
+                        type=str,
+                        default="transcripts/sc0-inspiration.txt",
+                        required=False,
+                        help="Text file (.txt) on which to do sentiment analysis")
+
+    args = parser.parse_args()
+
+    filename = args.input_file
     with open(filename, "r") as f:
         transcript = TextBlob(f.read())
 
+    # Keep a list of polarity and subjectivity
     polx, poly = [], []
     subx, suby = [], []
 
@@ -50,13 +74,7 @@ if __name__ == "__main__":
         # Report quarterly progress during analysis
         if index % int((num_windows / 4)) == 0:
             print(
-                "Finished window",
-                index,
-                "/",
-                num_windows,
-                "[",
-                round((index / num_windows) * 100, 2),
-                "% ]",
+                    "Finished window {}/{} [{:.2f}%]".format(index, num_windows, index/num_windows*100)
             )
 
     # Report how long the analysis took
