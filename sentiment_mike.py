@@ -46,6 +46,7 @@ if __name__ == "__main__":
 
     filename = args.input_file
     with open(filename, "r") as f:
+        author = f.readline().rstrip() 
         transcript = TextBlob(f.read())
 
     # Keep a list of polarity and subjectivity
@@ -81,7 +82,7 @@ if __name__ == "__main__":
     print("SC Analysis Runtime:", round(time.time() - startTime, 2), "seconds")
 
     # Time to graph! set up the plot with axes and labels
-    plt.title(filename)
+    plt.title(author)
     # plt.ylim(-1, 1)
     plt.plot(polx, poly, linewidth=1, label="polarity")
     # plt.plot(moving_average(poly,n=10), linewidth = 1, label = "polarity")
