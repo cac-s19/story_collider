@@ -4,3 +4,4 @@ matplotlib
 requests
 docx2txt
 argparse
+scipy
