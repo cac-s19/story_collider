@@ -1,29 +1,49 @@
-import requests
-import os
 import glob
+import os
+import requests
 import docx2txt
+import shutil
 
-folder = "worddocs"
+doc_folder = "worddocs"
+text_folder = "text"
 
-if not os.path.exists(folder):
-    os.makedirs(folder)
+if not os.path.exists(doc_folder):
+    os.makedirs(doc_folder)
 
-with open('links.txt') as file:
-    for line in file:
-        url = line.split('https')[-1]
-        myfile = requests.get('https'+ url.rstrip())
-        a = line.split('/')[-1].rstrip()
-        open(folder + '/' + a, 'wb').write(myfile.content)
+if not os.path.exists(text_folder):
+    os.makedirs(text_folder)
 
-#https://likegeeks.com/downloading-files-using-python/
-#I want this to download the files from the url and put them into a new file called?!
-#Also something about converting files?
-if not os.path.exists('text'):
-    os.makedirs('text')
-for x in  glob.glob("worddocs/*.docx"):
-      print(x)
-      text = docx2txt.process(x)
-      fname = x.split("/")
-      fname = fname[-1].replace("docx","txt")
-      with open("text/"+fname,"w") as f:
-          f.write(x)
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+len_links = file_len("links.txt")
+
+with open("links.txt") as file:
+    for i, line in enumerate(file):
+        url = line.split("https")[-1]
+        progress = (i+1)/len_links*100
+        name = url.rstrip().split("/")[-1]
+        printstr = "\rDownloading [{:.1f}%]: {}".format(progress,name)
+        term_width,_ = shutil.get_terminal_size()
+        print(printstr+" "*(term_width-len(printstr)), end="\r", flush=True)
+        myfile = requests.get("https" + url.rstrip())
+        a = line.split("/")[-1].rstrip()
+        if a.split(".")[-1] != "docx":
+            a = a+".docx"
+        open(doc_folder + "/" + a, "wb").write(myfile.content)
+
+for i,x in enumerate(glob.glob("worddocs/*.docx")):
+    progress = (i+1)/len_links*100
+    printstr = "\rConverting [{:.1f}%]: {}".format(progress, x)
+    term_width,_ = shutil.get_terminal_size()
+    print(printstr + " "*(term_width-len(printstr)), end="\r", flush=True)
+    text = docx2txt.process(x)
+    fname = x.split("/")
+    fname = fname[-1].replace("docx", "txt")
+    with open(text_folder + "/" + fname, "w") as f:
+        f.write(text)
+
+print("\nDone!")
