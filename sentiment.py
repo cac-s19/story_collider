@@ -1,7 +1,6 @@
 import time
 import platform 
 
-
 # This fixes NSInvalidArgumentException from tkinter on OSX
 if platform.system() == "Darwin": 
     import matplotlib
@@ -9,7 +8,6 @@ if platform.system() == "Darwin":
     from matplotlib import pyplot as plt
 else:
     import matplotlib.pyplot as plt
-
 
 import numpy as np
 from textblob import TextBlob
@@ -27,35 +25,19 @@ def moving_average(data, window_size=3):
     """
     cumsum = np.cumsum(data, dtype=float)
     cumsum[window_size:] = cumsum[window_size:] - cumsum[:-window_size]
+    
     return cumsum[window_size - 1 :] / window_size
 
 
-if __name__ == "__main__":
-    # Fun examples included: raven.txt, hanselgretel.txt, icarus.txt
-    # Note: It seems that TextBlob does not like parsing through copy-pasted end quotes.
-    #       If you're getting UnicodeDecodeError, that could the problem.
+def analyze_sentiment(filename):
+    """Performs sentiment analysis using textblob.
 
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    
-    parser.add_argument("-f", "--input_file", 
-                        type=str,
-                        default="transcripts/sc0-inspiration.txt",
-                        required=False,
-                        help="Text file (.txt) on which to do sentiment analysis")
+    filename -- txt file containing story tanscript 
+    (first name is assumed to be author's name)
+    """
 
-    parser.add_argument("-s", "--save", 
-                        dest="save",
-                        action="store_true",
-                        help="Save the resulting plot as plots/author_name.png (default=False)")
-
-    parser.set_defaults(save=False)
-
-    args = parser.parse_args()
-
-
-    filename = args.input_file
     with open(filename, "r") as f:
-        author = f.readline().rstrip() 
+        author = f.readline().rstrip()
         transcript = TextBlob(f.read())
 
     # Keep a list of polarity and subjectivity
@@ -82,7 +64,7 @@ if __name__ == "__main__":
     for index, window in enumerate(transcript.ngrams(seg_length)):
         poly.append(TextBlob(" ".join(window)).sentiment.polarity)
         polx.append(len(poly))
-        
+
         suby.append(TextBlob(" ".join(window)).sentiment.subjectivity)
 
         # Report quarterly progress during analysis
@@ -90,19 +72,44 @@ if __name__ == "__main__":
             print(
                     "Finished window {}/{} [{:.2f}%]".format(index, num_windows, index/num_windows*100)
             )
-    
+
     # storing as np array is easier to write to csv
-    results = np.stack([polx, poly, suby]).transpose() 
-    
+    results = np.stack([polx, poly, suby]).transpose()
+
     # Report how long the analysis took
     print("SC Analysis Runtime:", round(time.time() - startTime, 2), "seconds")
+    
+    return author, results
 
+
+if __name__ == "__main__":
+    # Fun examples included: raven.txt, hanselgretel.txt, icarus.txt
+    # Note: It seems that TextBlob does not like parsing through copy-pasted end quotes.
+    #       If you're getting UnicodeDecodeError, that could the problem.
+
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    
+    parser.add_argument("-f", "--input_file", 
+                        type=str,
+                        required=True,
+                        help="Text file (.txt) on which to do sentiment analysis")
+
+    parser.add_argument("-s", "--save", 
+                        dest="save",
+                        action="store_true",
+                        help="Save the resulting plot as plots/author_name.png (default=False)")
+
+    parser.set_defaults(save=False)
+
+    args = parser.parse_args()
+    filename = args.input_file
+
+    author, results = analyze_sentiment(filename)
+
+    
     # Time to graph! set up the plot with axes and labels
     plt.title(author)
-    # plt.ylim(-1, 1)
     plt.plot(results[:,0], results[:,1], linewidth=1, label="Polarity")
-    # plt.plot(moving_average(poly,n=10), linewidth = 1, label = "polarity")
-    # plt.plot(moving_average(suby,n=20), linewidth = 1, label = "subjectivity")
     plt.xlabel("Window #")
     plt.legend()
 
@@ -123,6 +130,7 @@ if __name__ == "__main__":
 
         np.savetxt(f"csv/{fname}.csv", results, delimiter=",",
                 header="window #, polarity, subjectivity")
+        print(f"Data save to csv/{fname}.csv")
 
     else:
         plt.show()
