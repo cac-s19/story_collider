@@ -53,12 +53,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
 
-    plots_folder = "plots"
-
-    if not os.path.exists(plots_folder):
-        os.makedirs(plots_folder)
-
-
     filename = args.input_file
     with open(filename, "r") as f:
         author = f.readline().rstrip() 
@@ -66,7 +60,7 @@ if __name__ == "__main__":
 
     # Keep a list of polarity and subjectivity
     polx, poly = [], []
-    subx, suby = [], []
+    suby = []
 
     num_words = len(transcript.words)  # Number of words in transcript
     seg_length = 10_000 if num_words > 10_0000 else int(num_words / 5)
@@ -74,7 +68,7 @@ if __name__ == "__main__":
 
     # Print out variables
     print(
-        f"Number of Words: {num_words} \nSegment Lenght: {seg_length} \nNumber of Windows: {num_windows}"
+        f"Number of Words: {num_words} \nSegment Length: {seg_length} \nNumber of Windows: {num_windows}"
     )
 
     # Conduct the sentiment analysis!! We do this according to Reagan's method of gathering all the
@@ -82,33 +76,53 @@ if __name__ == "__main__":
     print("Conducting SC Analysis...")
     # Let's keep track of how long this takes; bigger files may become a problem
     startTime = time.time()
+
     # We use the TextBlob ngrams() function to retrieve all the possible windows of our
     # specified segLength in the transcript
     for index, window in enumerate(transcript.ngrams(seg_length)):
         poly.append(TextBlob(" ".join(window)).sentiment.polarity)
         polx.append(len(poly))
+        
+        suby.append(TextBlob(" ".join(window)).sentiment.subjectivity)
+
         # Report quarterly progress during analysis
         if index % int((num_windows / 4)) == 0:
             print(
                     "Finished window {}/{} [{:.2f}%]".format(index, num_windows, index/num_windows*100)
             )
-
+    
+    # storing as np array is easier to write to csv
+    results = np.stack([polx, poly, suby]).transpose() 
+    
     # Report how long the analysis took
     print("SC Analysis Runtime:", round(time.time() - startTime, 2), "seconds")
 
     # Time to graph! set up the plot with axes and labels
     plt.title(author)
     # plt.ylim(-1, 1)
-    plt.plot(polx, poly, linewidth=1, label="polarity")
+    plt.plot(results[:,0], results[:,1], linewidth=1, label="Polarity")
     # plt.plot(moving_average(poly,n=10), linewidth = 1, label = "polarity")
     # plt.plot(moving_average(suby,n=20), linewidth = 1, label = "subjectivity")
-    plt.xlabel("sentence #")
+    plt.xlabel("Window #")
     plt.legend()
 
     if args.save == True:
+        plots_folder = "plots"
+        csv_folder = "csv"
+
+        if not os.path.exists(plots_folder):
+            os.makedirs(plots_folder)
+        
+        if not os.path.exists(csv_folder):
+            os.makedirs(csv_folder)
+        
         fname = author.replace(" ","") # Remove spaces
         plt.savefig(f"plots/{fname}.png")
         plt.close()
         print(f"Plot saved to plots/{fname}.png")
+
+        np.savetxt(f"csv/{fname}.csv", results, delimiter=",",
+                header="window #, polarity, subjectivity")
+
     else:
         plt.show()
