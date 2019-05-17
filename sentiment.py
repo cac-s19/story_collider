@@ -55,7 +55,7 @@ def analyze_sentiment(filename):
 
     # Conduct the sentiment analysis!! We do this according to Reagan's method of gathering all the
     # words in a sliding window of the text. Each window is analyzed as a whole for sentiment.
-    print("Conducting SC Analysis...")
+    print(f"Conducting SC Analysis on {author}...")
     # Let's keep track of how long this takes; bigger files may become a problem
     startTime = time.time()
 
