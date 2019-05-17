@@ -12,7 +12,7 @@ def file_len(fname):
     return i + 1
 
 
-def download:
+def download():
     """Downloads all worddocs in links.txt to worddocs folder."""
     
     doc_folder = "worddocs"
@@ -37,7 +37,7 @@ def download:
             open(doc_folder + "/" + a, "wb").write(myfile.content)
 
 
-def convert:
+def convert():
     """Converts all worddocs in folder to txt files"""
 
     text_folder = "text"
