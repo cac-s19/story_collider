@@ -5,3 +5,4 @@ plots
 csv
 .ipynb_checkpoints/
 curve_fitting.ipynb
+__pycache__/
