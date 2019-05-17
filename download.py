@@ -4,6 +4,8 @@ import requests
 import docx2txt
 import shutil
 import sentiment
+import numpy as np
+
 
 def file_len(fname):
     with open(fname) as f:
@@ -58,8 +60,8 @@ def convert():
 
 if __name__ == "__main__":
     
-    #download()
-    #convert()
+    download()
+    convert()
     
     csv_folder = "csv"
 
