@@ -31,7 +31,7 @@ def polyfit(deg):
     for csvfile in glob.glob("csv/*.csv"):
         filename = csvfile
         results = np.genfromtxt(filename, delimiter=",", skip_header=1)
-        author = filename.split("/")[-1].strip(".csv")
+        author = filename.split("/")[-1].split(".")[0]
 
         # Normalize the polarity data
         # by shiting by the the mean
