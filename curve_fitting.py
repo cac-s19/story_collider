@@ -20,8 +20,12 @@ def odd(f):
     return int(np.ceil(f) // 2 * 2 + 1)
 
 
-if __name__ == "__main__":
-    deg = 8  # degree of polynomial fit
+def polyfit(deg):
+    """Fits all polarity  csv data in csv/ to a
+    polynomial of degree deg and returns a dictionary
+    with the (deg + 1) fit coefficients under the
+    author's name"""
+
     polyfit_dict = {}
 
     for csvfile in glob.glob("csv/*.csv"):
@@ -50,3 +54,8 @@ if __name__ == "__main__":
 
         # Save coefficients to dict under author name
         polyfit_dict[author] = sm_coeffs
+        return polyfit_dict
+
+
+if __name__ == "__main__":
+    polyfit(8)
