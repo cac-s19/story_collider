@@ -1,9 +1,10 @@
 import time
-import platform 
+import platform
 
 # This fixes NSInvalidArgumentException from tkinter on OSX
-if platform.system() == "Darwin": 
+if platform.system() == "Darwin":
     import matplotlib
+
     matplotlib.use("TkAgg")
     from matplotlib import pyplot as plt
 else:
@@ -25,7 +26,7 @@ def moving_average(data, window_size=3):
     """
     cumsum = np.cumsum(data, dtype=float)
     cumsum[window_size:] = cumsum[window_size:] - cumsum[:-window_size]
-    
+
     return cumsum[window_size - 1 :] / window_size
 
 
@@ -70,7 +71,9 @@ def analyze_sentiment(filename):
         # Report quarterly progress during analysis
         if index % int((num_windows / 4)) == 0:
             print(
-                    "Finished window {}/{} [{:.2f}%]".format(index, num_windows, index/num_windows*100)
+                "Finished window {}/{} [{:.2f}%]".format(
+                    index, num_windows, index / num_windows * 100
+                )
             )
 
     # storing as np array is easier to write to csv
@@ -78,7 +81,7 @@ def analyze_sentiment(filename):
 
     # Report how long the analysis took
     print("SC Analysis Runtime:", round(time.time() - startTime, 2), "seconds")
-    
+
     return author, results
 
 
@@ -87,17 +90,25 @@ if __name__ == "__main__":
     # Note: It seems that TextBlob does not like parsing through copy-pasted end quotes.
     #       If you're getting UnicodeDecodeError, that could the problem.
 
-    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    
-    parser.add_argument("-f", "--input_file", 
-                        type=str,
-                        required=True,
-                        help="Text file (.txt) on which to do sentiment analysis")
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
 
-    parser.add_argument("-s", "--save", 
-                        dest="save",
-                        action="store_true",
-                        help="Save the resulting plot as plots/author_name.png (default=False)")
+    parser.add_argument(
+        "-f",
+        "--input_file",
+        type=str,
+        required=True,
+        help="Text file (.txt) on which to do sentiment analysis",
+    )
+
+    parser.add_argument(
+        "-s",
+        "--save",
+        dest="save",
+        action="store_true",
+        help="Save the resulting plot as plots/author_name.png (default=False)",
+    )
 
     parser.set_defaults(save=False)
 
@@ -106,10 +117,9 @@ if __name__ == "__main__":
 
     author, results = analyze_sentiment(filename)
 
-    
     # Time to graph! set up the plot with axes and labels
     plt.title(author)
-    plt.plot(results[:,0], results[:,1], linewidth=1, label="Polarity")
+    plt.plot(results[:, 0], results[:, 1], linewidth=1, label="Polarity")
     plt.xlabel("Window #")
     plt.legend()
 
@@ -119,17 +129,21 @@ if __name__ == "__main__":
 
         if not os.path.exists(plots_folder):
             os.makedirs(plots_folder)
-        
+
         if not os.path.exists(csv_folder):
             os.makedirs(csv_folder)
-        
-        fname = author.replace(" ","") # Remove spaces
+
+        fname = author.replace(" ", "")  # Remove spaces
         plt.savefig(f"plots/{fname}.png")
         plt.close()
         print(f"Plot saved to plots/{fname}.png")
 
-        np.savetxt(f"csv/{fname}.csv", results, delimiter=",",
-                header="window #, polarity, subjectivity")
+        np.savetxt(
+            f"csv/{fname}.csv",
+            results,
+            delimiter=",",
+            header="window #, polarity, subjectivity",
+        )
         print(f"Data save to csv/{fname}.csv")
 
     else:
