@@ -32,8 +32,7 @@ def moving_average(data, window_size=3):
 
 def analyze_sentiment(filename):
     """Performs sentiment analysis using textblob.
-
-    filename -- txt file containing story tanscript 
+    filename -- txt file containing story transcript
     (first name is assumed to be author's name)
     """
 
@@ -51,7 +50,9 @@ def analyze_sentiment(filename):
 
     # Print out variables
     print(
-        f"Number of Words: {num_words} \nSegment Length: {seg_length} \nNumber of Windows: {num_windows}"
+        f"""Number of Words: {num_words} \n
+        Segment Length: {seg_length} \n
+        Number of Windows: {num_windows}"""
     )
 
     # Conduct the sentiment analysis!! We do this according to Reagan's method of gathering all the
