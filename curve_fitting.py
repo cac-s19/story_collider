@@ -54,7 +54,7 @@ def polyfit(deg):
 
         # Save coefficients to dict under author name
         polyfit_dict[author] = sm_coeffs
-        return polyfit_dict
+    return polyfit_dict
 
 
 if __name__ == "__main__":
