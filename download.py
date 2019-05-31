@@ -68,7 +68,9 @@ if __name__ == "__main__":
     if not os.path.exists(csv_folder):
         os.makedirs(csv_folder)
 
-    for txtfile in glob.glob("text/*.txt"):
+    txts = glob.glob("text/*.txt")
+
+    for i, txtfile in enumerate(txts):
         author, results = sentiment.analyze_sentiment(txtfile)
 
         fname = author.replace(" ", "")  # Remove spaces
@@ -79,6 +81,7 @@ if __name__ == "__main__":
             delimiter=",",
             header="window #, polarity, subjectivity",
         )
-        print(f"Data saved to {csv_folder}/{fname}.csv")
+
+        print(f"Data saved to {csv_folder}/{fname}.csv [{i+1}/{len(txts)}]")
 
     print("\nDone!")
