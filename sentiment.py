@@ -30,10 +30,10 @@ def moving_average(data, window_size=3):
     return cumsum[window_size - 1 :] / window_size
 
 
-def analyze_sentiment(filename):
+def analyze_sentiment(filename, verbose=False):
     """Performs sentiment analysis using textblob.
     filename -- txt file containing story transcript
-    (first name is assumed to be author's name)
+    (first line is assumed to be author's name)
     """
 
     with open(filename, "r") as f:
@@ -45,15 +45,16 @@ def analyze_sentiment(filename):
     suby = []
 
     num_words = len(transcript.words)  # Number of words in transcript
-    seg_length = 10_000 if num_words > 10_0000 else int(num_words / 5)
-    num_windows = num_words - seg_length  # Number of windows to analyze sentiment from
+    num_windows = 1000  # Number of windows to analyze sentiment from
+    seg_length = num_words - num_windows
 
     # Print out variables
-    print(
+    if verbose:
+        print(
         f"""Number of Words: {num_words} \n
         Segment Length: {seg_length} \n
         Number of Windows: {num_windows}"""
-    )
+        )
 
     # Conduct the sentiment analysis!! We do this according to Reagan's method of gathering all the
     # words in a sliding window of the text. Each window is analyzed as a whole for sentiment.
@@ -69,13 +70,15 @@ def analyze_sentiment(filename):
 
         suby.append(TextBlob(" ".join(window)).sentiment.subjectivity)
 
-        # Report quarterly progress during analysis
-        if index % int((num_windows / 4)) == 0:
-            print(
-                "Finished window {}/{} [{:.2f}%]".format(
-                    index, num_windows, index / num_windows * 100
-                )
-            )
+        # Report progress during analysis
+        if verbose:
+            if index % 250 == 0:
+                print(
+                        "Finished window {}/{} [{:.2f}%]".format(index,
+                            num_windows,
+                            index / num_windows
+                            )
+                     )
 
     # storing as np array is easier to write to csv
     results = np.stack([polx, poly, suby]).transpose()
@@ -116,7 +119,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     filename = args.input_file
 
-    author, results = analyze_sentiment(filename)
+    author, results = analyze_sentiment(filename, verbose=True)
 
     # Time to graph! set up the plot with axes and labels
     plt.title(author)
