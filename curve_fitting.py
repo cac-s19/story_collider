@@ -58,4 +58,4 @@ def polyfit(deg):
 
 
 if __name__ == "__main__":
-    polyfit(8)
+    polyfit(4)
