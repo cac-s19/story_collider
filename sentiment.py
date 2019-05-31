@@ -51,7 +51,7 @@ def analyze_sentiment(filename, verbose=False):
     # Print out variables
     if verbose:
         print(
-        f"""Number of Words: {num_words} \n
+            f"""Number of Words: {num_words} \n
         Segment Length: {seg_length} \n
         Number of Windows: {num_windows}"""
         )
@@ -74,11 +74,10 @@ def analyze_sentiment(filename, verbose=False):
         if verbose:
             if index % 250 == 0:
                 print(
-                        "Finished window {}/{} [{:.2f}%]".format(index,
-                            num_windows,
-                            index / num_windows
-                            )
-                     )
+                    "Finished window {}/{} [{:.2f}%]".format(
+                        index, num_windows, index / num_windows
+                    )
+                )
 
     # storing as np array is easier to write to csv
     results = np.stack([polx, poly, suby]).transpose()
