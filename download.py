@@ -46,6 +46,7 @@ def convert():
 
     if not os.path.exists(text_folder):
         os.makedirs(text_folder)
+    len_links = len(enumerate(glob.glob("worddocs/*.docx"))
     for i, x in enumerate(glob.glob("worddocs/*.docx")):
         progress = (i + 1) / len_links * 100
         printstr = "\rConverting [{:.1f}%]: {}".format(progress, x)
